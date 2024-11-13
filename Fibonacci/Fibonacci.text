@@ -1,0 +1,33 @@
+.text
+    .globl start
+
+start:
+    addi sp, sp, -16   # Stack için yer ayır
+    sw ra, 12(sp)      # Dönüş adresini kaydet
+	
+    li t2, 2
+    li t0, 0           # İlk Fibonacci sayısı, Fib(0)
+    li t1, 1           # İkinci Fibonacci sayısı, Fib(1)
+
+    li a1, 2
+    blt t2, a1, direct # Eğer n < 2 ise, doğrudan sonuca git
+    li a1, 10
+    blt t2, a1, loop # Eğer n < 10 ise, hesaplama için devam et
+
+loop:
+    add t4, t0, t1     # Bir sonraki Fibonacci sayısını hesapla
+    mv t0, t1          # Değerleri güncelle
+    mv t1, t4
+    addi t2, t2, 1     # Sayacı arttır
+    blt t2, a1, loop   # Sayac a1'den küçükse döngüye devam et
+
+direct:
+    beqz t2, end       # Eğer n == 0 ise t0 doğru sonuçtur
+    mv a0, t1          # Aksi takdirde son Fibonacci sayısı t1'dedir
+
+end:
+    lw ra, 12(sp)      # Dönüş adresini yükle
+    addi sp, sp, 16    # Stack'ten ayrılan yeri serbest bırak
+    li a7, 93          # exit sistem çağrısının numarası
+    li a0, 0           # Çıkış durumu kodu
+    ecall              # Sistem çağrısını gerçekleştir

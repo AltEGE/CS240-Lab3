@@ -1,0 +1,26 @@
+    lui s0, 0xABCDE          # s0 = 0xABCDE000
+    addi s0, s0, 0x123       # s0 = 0xABCDE123
+    sw s0, 0x300(zero)       # memory[300] = 0xABCDE123
+    
+    # t0 kaydedicisine 0x300 adresini yükle
+    lui t0, 0x0              # t0'a üst 20 bit olarak 0x0 yükler
+    addi t0, t0, 0x300       # t0'a 0x300 ekler, böylece t0 şimdi 0x300 adresini gösterir
+
+      
+
+loop_start:
+    lbu t2, 0(t0)            # İlk byte
+    lbu t3, 1(t0)            # İkinci byte
+    lbu t4, 2(t0)            # Üçüncü byte
+    lbu t5, 3(t0)            # Dördüncü byte
+
+    sb t5, 0(t0)             # Dördüncü byte'ı ilk byte pozisyonuna sakla
+    sb t4, 1(t0)             # Üçüncü byte'ı ikinci byte pozisyonuna sakla
+    sb t3, 2(t0)             # İkinci byte'ı üçüncü byte pozisyonuna sakla
+    sb t2, 3(t0)             # İlk byte'ı dördüncü byte pozisyonuna sakla
+
+ 
+    # Programı sonlandırmak için ecall kullan
+    li a7, 93                 # exit sistem çağrısının numarası
+    li a0, 0                  # Çıkış kodu olarak 0 kullan
+    ecall                     # Sistem çağrısını yap
